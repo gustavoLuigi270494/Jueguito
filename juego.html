@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Juego de Memoriass</title>
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans">
+	<style type="text/css">
+		body{
+			font-family: 'Open Sans';
+			background-color: aqua;
+		}
+		h1{
+			text-align: center;
+		}
+		div#tablero{
+			background: #00d812;
+			border:#000 10px solid;
+			width: 800px;
+			height: 540px;
+			padding: 1px;
+			margin:2px auto;	
+		}
+
+		div#tablero>div{
+			background-color: rgb(58, 23, 128);
+			background-image: url('icon.png');
+			background-size: cover;
+			border: #000 1px solid;
+			width: 110px;
+			height: 110px;
+			float: left;
+			margin:10px;
+			font-size: 60px;
+			color: #fff;
+			font-weight: bold;
+			cursor: pointer;
+			text-align: center;
+		}
+	</style>
+
+	<script >
+		var arrayOpciones = ['A','A','B','B','C','C','D','D','E','E','F','F','G','G','H','H','I','I','J','J','K','K','L','L'];
+		var valoresCartas =[];
+		var idCartas= [];
+		var cartasAdivinadas = 0;
+		var intentos = 0;
+
+		/*Array.prototype.mezclar = function (){
+			var i = this.length-1;
+			var indiceAleatorio;
+			var valorTemporal;
+			while(i >0){
+				indiceAleatorio = Math.floor(Math.random()*(i+1));
+				valorTemporal = this[indiceAleatorio];
+				this[indiceAleatorio] = this[i];
+				this[i] = valorTemporal;
+				i--;
+			};
+		};*/
+
+		//var vector = [1,2,3,4,5,6];
+		function desordenar(vector){
+			var inAl,vaTe;
+			for(i = 0 ; i<vector.length ; i++){
+				inAl = Math.floor(Math.random()*(i+1));
+				vaTe = vector[inAl];
+				vector[inAl] = vector[i];
+				vector[i] = vaTe;
+			}
+			return vector;
+		}
+		//console.log(desordenar(vector));
+
+		//funcion para crar un nuevo tablero
+		function nuevoTablero(){
+			intentos =0;
+			cartasAdivinadas=0;
+			var codigoHtml = '';
+			//arrayOpciones.mezclar();
+			arrayOpciones = desordenar(arrayOpciones);
+			for (var i=0 ; i<arrayOpciones.length ; i++) {
+				codigoHtml += '<div id="carta_'+i+'" onclick="girarCarta(this,\''+arrayOpciones[i]+'\' )"></div>';
+
+			}
+			document.getElementById('tablero').innerHTML = codigoHtml;
+		}
+
+		/////funcion del Juego!
+		function girarCarta(carta,val){
+			if(carta.innerHTML == "" && valoresCartas.length<2){
+				//coloca fondo letra y valor
+				carta.style.background = '#000';
+				carta.style.color ='red';
+				carta.innerHTML = val;
+
+				//para dar vuelta la primera carta
+				if(valoresCartas.length === 0){
+					valoresCartas.push(val);
+					idCartas.push(carta.id);
+					//console.log(valoresCartas, idCartas);
+				//para dar vuelta la segunda carta
+				}else if(valoresCartas.length === 1){
+					valoresCartas.push(val);
+					idCartas.push(carta.id);
+					//console.log(valoresCartas,idCartas);
+
+					//comprobamos si las cartas son iguales
+					if(valoresCartas[0] === valoresCartas[1]){
+						cartasAdivinadas +=2;
+						document.getElementById("score").innerHTML =cartasAdivinadas;
+						//limpiar las variables
+						valoresCartas = [];
+						idCartas = [];
+						//comprobamos si  terminamos el juego
+						if(cartasAdivinadas === arrayOpciones.length){
+							alert("Ganaste!!!... creando un nuevo tablero");
+							document.getElementById('tablero').innerHTML = "";
+							nuevoTablero();
+						}
+					}else {
+						intentos++;
+						function ocultarCarta(){
+							
+							//girar la carta y volver a mostrar la imagen
+							var carta_1 = document.getElementById(idCartas[0]);
+							var carta_2 = document.getElementById(idCartas[1]);
+							//añadimos estilos cuando ocultamos cartas1
+							carta_1.style.backgroundColor = "#EEE";
+							carta_1.style.backgroundImage ="url(icon.png)";
+							carta_1.style.backgroundSize = "cover";
+							carta_1.innerHTML ="";
+
+							//añadimos estilos cuando ocultamos cartas2
+							carta_2.style.backgroundColor = "#EEE";
+							carta_2.style.backgroundImage ="url(icon.png)";
+							carta_2.style.backgroundSize = "cover";
+							carta_2.innerHTML ="";
+							carta_1.style.backgroundColor = "red";
+							carta_2.style.backgroundColor = "red";
+
+							//limpiamos las variales (array)
+							valoresCartas = [];
+							idCartas = [];
+							score++;
+
+							
+						}
+						document.getElementById('error').innerHTML = intentos;
+						
+						setTimeout(ocultarCarta,500);
+					}
+				}				
+			}
+		}		
+
+				
+	</script>
+		
+</head>
+<body>
+	<div class="content">
+		<h1>Juego de Memoria</h1>
+		<div id="tablero"></div>
+		<hr>
+		<h3>Aciertos</h3><h4 id ="score"></h4>
+		<br>
+		<h3>intentos</h3><h4 id ="error"></h4>
+	</div>
+	<script >nuevoTablero();</script>
+</body>
+</html>

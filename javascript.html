@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>	</title>
+</head>
+<body>
+ 		<h1>axios</h1>
+ 		<button id="button">set datsa</button>
+ 		<ul id="list"></ul>
+</body>
+<script  src = " https://unpkg.com/axios/dist/axios.min.js " > </script>
+<script>
+	button.addEventListener('click',()=>{
+		axios({
+			method : 'GET',
+			url: 'https://jsonplaceholder.typicode.com/users'
+		}).then(res => {
+			const list = document.getElementById('list')
+			const fragment = document.createDocumentFragment()
+			for(const userInfo of res.data){
+				const listItem = document.createElement('LI')
+				listItem.textContent = `${userInfo.id} - ${userInfo.name}` 
+				fragment.appendChild(listItem)
+				document.get
+			}
+			list.appendChild(fragment)
+		}).catch(err => alert.log(err))
+	})
+</script>
+
+</html>
